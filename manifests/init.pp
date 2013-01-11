@@ -404,16 +404,6 @@ class dhcpd (
 
   ### Service monitoring, if enabled ( monitor => true )
   if $dhcpd::bool_monitor == true {
-    if $dhcpd::port != '' {
-      monitor::port { "dhcpd_${dhcpd::protocol}_${dhcpd::port}":
-        protocol => $dhcpd::protocol,
-        port     => $dhcpd::port,
-        target   => $dhcpd::monitor_target,
-        tool     => $dhcpd::monitor_tool,
-        enable   => $dhcpd::manage_monitor,
-        noop     => $dhcpd::bool_noops,
-      }
-    }
     if $dhcpd::service != '' {
       monitor::process { 'dhcpd_process':
         process  => $dhcpd::process,

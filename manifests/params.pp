@@ -17,11 +17,14 @@ class dhcpd::params {
   ### Application related parameters
 
   $package = $::operatingsystem ? {
-    default => 'dhcpd',
+    /(?i:Debian|Ubuntu|Mint)/ => 'dhcpd3-server',
+    /(?i:SLES|OpenSuSE)/      => 'dhcp-server',
+    default                   => 'dhcp',
   }
 
   $service = $::operatingsystem ? {
-    default => 'dhcpd',
+    /(?i:Debian|Ubuntu|Mint)/ => 'dhcpd3-server',
+    default                   => 'dhcpd',
   }
 
   $service_status = $::operatingsystem ? {
@@ -29,7 +32,8 @@ class dhcpd::params {
   }
 
   $process = $::operatingsystem ? {
-    default => 'dhcpd',
+    /(?i:Debian|Ubuntu|Mint)/ => 'dhcpd3',
+    default                   => 'dhcpd',
   }
 
   $process_args = $::operatingsystem ? {
@@ -41,11 +45,14 @@ class dhcpd::params {
   }
 
   $config_dir = $::operatingsystem ? {
-    default => '/etc/dhcpd',
+    /(?i:Debian|Ubuntu|Mint)/ => '/etc/dhcp3',
+    /(?i:SLES|OpenSuSE)/      => '/etc/dhcpd.d',
+    default                   => '/etc/dhcp',
   }
 
   $config_file = $::operatingsystem ? {
-    default => '/etc/dhcpd/dhcpd.conf',
+    /(?i:Debian|Ubuntu|Mint)/ => '/etc/dhcp3/dhcpd.conf',
+    default                   => '/etc/dhcpd.conf',
   }
 
   $config_file_mode = $::operatingsystem ? {
@@ -61,28 +68,31 @@ class dhcpd::params {
   }
 
   $config_file_init = $::operatingsystem ? {
-    /(?i:Debian|Ubuntu|Mint)/ => '/etc/default/dhcpd',
+    /(?i:Debian|Ubuntu|Mint)/ => '/etc/default/dhcp3-server',
     default                   => '/etc/sysconfig/dhcpd',
   }
 
   $pid_file = $::operatingsystem ? {
-    default => '/var/run/dhcpd.pid',
+    /(?i:Debian|Ubuntu|Mint)/ => '/var/run/dhcp3-server/dhcpd.pid',
+    default                   => '/var/run/dhcpd.pid',
   }
 
   $data_dir = $::operatingsystem ? {
-    default => '/etc/dhcpd',
+    /(?i:Debian|Ubuntu|Mint)/ => '/var/lib/dhcp3',
+    /(?i:SLES|OpenSuSE)/      => '/var/lib/dhcp',
+    default                   => '/var/lib/dhcpd',
   }
 
   $log_dir = $::operatingsystem ? {
-    default => '/var/log/dhcpd',
+    default => '/var/log',
   }
 
   $log_file = $::operatingsystem ? {
-    default => '/var/log/dhcpd/dhcpd.log',
+    default => '',
   }
 
-  $port = '42'
-  $protocol = 'tcp'
+  $port = '67'
+  $protocol = 'udp'
 
   # General Settings
   $my_class = ''
