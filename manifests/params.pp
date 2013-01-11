@@ -17,17 +17,36 @@ class dhcpd::params {
   $source_init = ''
   $template_init = ''
 
+  # Cope with Debian's folies
+  $debian_isc_era = $::operatingsystem ? {
+    /(?i:Ubuntu)/ => $::lsbmajdistrelease ? {
+      8       => '5',
+      9       => '5',
+      default => '6',
+    },
+    /(?i:Debian)/ => $::lsbmajdistrelease ? {
+      5       => '5',
+      default => '6',
+    },
+    default   => '6',
+  }
 
   ### Application related parameters
 
   $package = $::operatingsystem ? {
-    /(?i:Debian|Ubuntu|Mint)/ => 'dhcpd3-server',
+    /(?i:Debian|Ubuntu|Mint)/ => $debian_isc_era ? {
+      5 => 'dhcp3-server',
+      6 => 'isc-dhcp-server',
+    },
     /(?i:SLES|OpenSuSE)/      => 'dhcp-server',
     default                   => 'dhcp',
   }
 
   $service = $::operatingsystem ? {
-    /(?i:Debian|Ubuntu|Mint)/ => 'dhcpd3-server',
+    /(?i:Debian|Ubuntu|Mint)/ => $debian_isc_era ? {
+      5 => 'dhcp3-server',
+      6 => 'isc-dhcp-server',
+    },
     default                   => 'dhcpd',
   }
 
@@ -36,7 +55,10 @@ class dhcpd::params {
   }
 
   $process = $::operatingsystem ? {
-    /(?i:Debian|Ubuntu|Mint)/ => 'dhcpd3',
+    /(?i:Debian|Ubuntu|Mint)/ => $debian_isc_era ? {
+      5 => 'dhcpd3',
+      6 => 'dhcpd',
+    },
     default                   => 'dhcpd',
   }
 
@@ -49,13 +71,19 @@ class dhcpd::params {
   }
 
   $config_dir = $::operatingsystem ? {
-    /(?i:Debian|Ubuntu|Mint)/ => '/etc/dhcp3',
+    /(?i:Debian|Ubuntu|Mint)/ => $debian_isc_era ? {
+      5 => '/etc/dhcp3',
+      6 => '/etc/dhcp',
+    },
     /(?i:SLES|OpenSuSE)/      => '/etc/dhcpd.d',
     default                   => '/etc/dhcp',
   }
 
   $config_file = $::operatingsystem ? {
-    /(?i:Debian|Ubuntu|Mint)/ => '/etc/dhcp3/dhcpd.conf',
+    /(?i:Debian|Ubuntu|Mint)/ => $debian_isc_era ? {
+      5 => '/etc/dhcp3/dhcpd.conf',
+      6 => '/etc/dhcp/dhcpd.conf',
+    },
     default                   => '/etc/dhcpd.conf',
   }
 
@@ -77,12 +105,18 @@ class dhcpd::params {
   }
 
   $pid_file = $::operatingsystem ? {
-    /(?i:Debian|Ubuntu|Mint)/ => '/var/run/dhcp3-server/dhcpd.pid',
+    /(?i:Debian|Ubuntu|Mint)/ => $debian_isc_era ? {
+      5 => 'var/run/dhcp3-server/dhcpd.pid',
+      6 => 'var/run/dhcp-server/dhcpd.pid',
+    },
     default                   => '/var/run/dhcpd.pid',
   }
 
   $data_dir = $::operatingsystem ? {
-    /(?i:Debian|Ubuntu|Mint)/ => '/var/lib/dhcp3',
+    /(?i:Debian|Ubuntu|Mint)/ => $debian_isc_era ? {
+      5 => '/var/lib/dhcp3',
+      6 => '/var/lib/dhcp',
+    },
     /(?i:SLES|OpenSuSE)/      => '/var/lib/dhcp',
     default                   => '/var/lib/dhcpd',
   }
