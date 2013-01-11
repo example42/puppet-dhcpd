@@ -5,6 +5,16 @@
 #
 # == Parameters
 #
+# Module specific parameters
+#
+# [*source_init*]
+#   Sets the content of source parameter for init configuration file
+#
+# [*template_init*]
+#   Sets the path to the template to use for init configuration file
+#   If defined, dhcpd init config file has: content => content("$template")
+#   Note source_init and template_init parameters are mutually exclusive
+#
 # Standard class parameters
 # Define the general class behaviour and customizations
 #
@@ -210,6 +220,8 @@
 #   Alessandro Franceschi <al@lab42.it/>
 #
 class dhcpd (
+  $source_init         = params_lookup( 'source_init' ),
+  $template_init       = params_lookup( 'template_init' ),
   $my_class            = params_lookup( 'my_class' ),
   $source              = params_lookup( 'source' ),
   $source_dir          = params_lookup( 'source_dir' ),
@@ -335,6 +347,17 @@ class dhcpd (
     default   => template($dhcpd::template),
   }
 
+  $manage_file_source_init = $dhcpd::source_init ? {
+    ''        => undef,
+    default   => $dhcpd::source_init,
+  }
+
+  $manage_file_content_init = $dhcpd::template_init ? {
+    ''        => undef,
+    default   => template($dhcpd::template_init),
+  }
+
+
   ### Managed resources
   package { $dhcpd::package:
     ensure  => $dhcpd::manage_package,
@@ -361,6 +384,21 @@ class dhcpd (
     notify  => $dhcpd::manage_service_autorestart,
     source  => $dhcpd::manage_file_source,
     content => $dhcpd::manage_file_content,
+    replace => $dhcpd::manage_file_replace,
+    audit   => $dhcpd::manage_audit,
+    noop    => $dhcpd::bool_noops,
+  }
+
+  file { 'dhcpd.init':
+    ensure  => $dhcpd::manage_file,
+    path    => $dhcpd::config_file_init,
+    mode    => $dhcpd::config_file_mode,
+    owner   => $dhcpd::config_file_owner,
+    group   => $dhcpd::config_file_group,
+    require => Package[$dhcpd::package],
+    notify  => $dhcpd::manage_service_autorestart,
+    source  => $dhcpd::manage_file_source_init,
+    content => $dhcpd::manage_file_content_init,
     replace => $dhcpd::manage_file_replace,
     audit   => $dhcpd::manage_audit,
     noop    => $dhcpd::bool_noops,

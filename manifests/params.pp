@@ -14,6 +14,10 @@
 #
 class dhcpd::params {
 
+  $source_init = ''
+  $template_init = ''
+
+
   ### Application related parameters
 
   $package = $::operatingsystem ? {
