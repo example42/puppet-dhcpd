@@ -1,4 +1,4 @@
-= Puppet module: dhcpd
+# Puppet module: dhcpd
 
 This is a Puppet module for ISC dhcpd based on the second generation layout ("NextGen") of Example42 Puppet Modules.
 
@@ -15,7 +15,7 @@ This module requires functions provided by the Example42 Puppi module (you need 
 For detailed info about the logic and usage patterns of Example42 modules check the DOCS directory on Example42 main modules set.
 
 
-== USAGE - Module specific
+## USAGE - Module specific
 
 * Install dhcpd with custom templates for dhcpd.conf and sysconfig init conf file
   It provides also arbitrary custom options can ccan be used on both templates with the
@@ -31,7 +31,7 @@ For detailed info about the logic and usage patterns of Example42 modules check 
         }
 
 
-== USAGE - Basic management
+## USAGE - Basic management
 
 * Install dhcpd with default settings
 
@@ -68,7 +68,7 @@ For detailed info about the logic and usage patterns of Example42 modules check 
         }
 
 
-== USAGE - Overrides and Customizations
+## USAGE - Overrides and Customizations
 * Use custom sources for main config file 
 
         class { 'dhcpd':
@@ -96,7 +96,7 @@ For detailed info about the logic and usage patterns of Example42 modules check 
         }
 
 
-== USAGE - Example42 extensions management 
+## USAGE - Example42 extensions management 
 * Activate puppi (recommended, but disabled by default)
 
         class { 'dhcpd':
@@ -127,6 +127,6 @@ For detailed info about the logic and usage patterns of Example42 modules check 
         }
 
 
-== CONTINUOUS TESTING
+## CONTINUOUS TESTING
 
 Travis {<img src="https://travis-ci.org/example42/puppet-dhcpd.png?branch=master" alt="Build Status" />}[https://travis-ci.org/example42/puppet-dhcpd]
