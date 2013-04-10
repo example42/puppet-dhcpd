@@ -359,7 +359,8 @@ class dhcpd (
 
 
   ### Managed resources
-  package { $dhcpd::package:
+  package { 'dhcpd':
+    name    => $dhcpd::package,
     ensure  => $dhcpd::manage_package,
     noop    => $dhcpd::bool_noops,
   }

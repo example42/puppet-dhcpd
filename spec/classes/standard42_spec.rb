@@ -65,8 +65,6 @@ describe 'dhcpd' do
     it { should contain_service('dhcpd').with_noop('true') }
     it { should contain_file('dhcpd.conf').with_noop('true') }
     it { should contain_monitor__process('dhcpd_process').with_noop('true') }
-    it { should contain_monitor__process('dhcpd_process').with_noop('true') }
-    it { should contain_monitor__port('dhcpd_tcp_42').with_noop('true') }
     it { should contain_firewall('dhcpd_tcp_42').with_noop('true') }
   end
 
