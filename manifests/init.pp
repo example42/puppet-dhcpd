@@ -283,6 +283,11 @@ class dhcpd (
     false => $dhcpd::version,
   }
 
+  $require_package = $dhcpd::package ? {
+    ''      => undef,
+    default => Package['dhcpd'],
+  }
+
   $manage_service_enable = $dhcpd::bool_disableboot ? {
     true    => false,
     default => $dhcpd::bool_disable ? {
@@ -357,12 +362,13 @@ class dhcpd (
     default   => template($dhcpd::template_init),
   }
 
-
   ### Managed resources
-  package { 'dhcpd':
-    name    => $dhcpd::package,
-    ensure  => $dhcpd::manage_package,
-    noop    => $dhcpd::bool_noops,
+  if $dhcpd::package {
+    package { 'dhcpd':
+      name    => $dhcpd::package,
+      ensure  => $dhcpd::manage_package,
+      noop    => $dhcpd::bool_noops,
+    }
   }
 
   service { 'dhcpd':
@@ -371,7 +377,7 @@ class dhcpd (
     enable     => $dhcpd::manage_service_enable,
     hasstatus  => $dhcpd::service_status,
     pattern    => $dhcpd::process,
-    require    => Package[$dhcpd::package],
+    require    => $require_package,
     noop       => $dhcpd::bool_noops,
   }
 
@@ -381,7 +387,7 @@ class dhcpd (
     mode    => $dhcpd::config_file_mode,
     owner   => $dhcpd::config_file_owner,
     group   => $dhcpd::config_file_group,
-    require => Package[$dhcpd::package],
+    require => $require_package,
     notify  => $dhcpd::manage_service_autorestart,
     source  => $dhcpd::manage_file_source,
     content => $dhcpd::manage_file_content,
@@ -390,19 +396,21 @@ class dhcpd (
     noop    => $dhcpd::bool_noops,
   }
 
-  file { 'dhcpd.init':
-    ensure  => $dhcpd::manage_file,
-    path    => $dhcpd::config_file_init,
-    mode    => $dhcpd::config_file_mode,
-    owner   => $dhcpd::config_file_owner,
-    group   => $dhcpd::config_file_group,
-    require => Package[$dhcpd::package],
-    notify  => $dhcpd::manage_service_autorestart,
-    source  => $dhcpd::manage_file_source_init,
-    content => $dhcpd::manage_file_content_init,
-    replace => $dhcpd::manage_file_replace,
-    audit   => $dhcpd::manage_audit,
-    noop    => $dhcpd::bool_noops,
+  if $dhcpd::config_file_init {
+    file { 'dhcpd.init':
+      ensure  => $dhcpd::manage_file,
+      path    => $dhcpd::config_file_init,
+      mode    => $dhcpd::config_file_mode,
+      owner   => $dhcpd::config_file_owner,
+      group   => $dhcpd::config_file_group,
+      require => $require_package,
+      notify  => $dhcpd::manage_service_autorestart,
+      source  => $dhcpd::manage_file_source_init,
+      content => $dhcpd::manage_file_content_init,
+      replace => $dhcpd::manage_file_replace,
+      audit   => $dhcpd::manage_audit,
+      noop    => $dhcpd::bool_noops,
+    }
   }
 
   # The whole dhcpd configuration directory can be recursively overriden
@@ -410,7 +418,7 @@ class dhcpd (
     file { 'dhcpd.dir':
       ensure  => directory,
       path    => $dhcpd::config_dir,
-      require => Package[$dhcpd::package],
+      require => $require_package,
       notify  => $dhcpd::manage_service_autorestart,
       source  => $dhcpd::source_dir,
       recurse => true,

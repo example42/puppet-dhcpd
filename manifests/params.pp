@@ -39,6 +39,7 @@ class dhcpd::params {
       6 => 'isc-dhcp-server',
     },
     /(?i:SLES|OpenSuSE)/      => 'dhcp-server',
+    /(?i:OpenBSD)/            => '',
     default                   => 'dhcp',
   }
 
@@ -67,7 +68,8 @@ class dhcpd::params {
   }
 
   $process_user = $::operatingsystem ? {
-    default => 'dhcpd',
+    /(?i:OpenBSD)/ => '_dhcp',
+    default        => 'dhcpd',
   }
 
   $config_dir = $::operatingsystem ? {
@@ -76,6 +78,7 @@ class dhcpd::params {
       6 => '/etc/dhcp',
     },
     /(?i:SLES|OpenSuSE)/      => '/etc/dhcpd.d',
+    /(?i:OpenBSD)/            => '',
     default                   => '/etc/dhcp',
   }
 
@@ -96,11 +99,13 @@ class dhcpd::params {
   }
 
   $config_file_group = $::operatingsystem ? {
-    default => 'root',
+    /(?i:OpenBSD)/ => 'wheel',
+    default        => 'root',
   }
 
   $config_file_init = $::operatingsystem ? {
     /(?i:Debian|Ubuntu|Mint)/ => '/etc/default/dhcp3-server',
+    /(?i:OpenBSD)/            => '',
     default                   => '/etc/sysconfig/dhcpd',
   }
 
@@ -109,6 +114,7 @@ class dhcpd::params {
       5 => 'var/run/dhcp3-server/dhcpd.pid',
       6 => 'var/run/dhcp-server/dhcpd.pid',
     },
+    /(?i:OpenBSD)/            => '',
     default                   => '/var/run/dhcpd.pid',
   }
 
@@ -118,6 +124,7 @@ class dhcpd::params {
       6 => '/var/lib/dhcp',
     },
     /(?i:SLES|OpenSuSE)/      => '/var/lib/dhcp',
+    /(?i:OpenBSD)/            => '',
     default                   => '/var/lib/dhcpd',
   }
 
