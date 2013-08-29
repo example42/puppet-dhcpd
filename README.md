@@ -55,18 +55,6 @@ For detailed info about the logic and usage patterns of Example42 modules check 
           absent => true
         }
 
-* Enable auditing without without making changes on existing dhcpd configuration *files*
-
-        class { 'dhcpd':
-          audit_only => true
-        }
-
-* Module dry-run: Do not make any change on *all* the resources provided by the module
-
-        class { 'dhcpd':
-          noops => true
-        }
-
 
 ## USAGE - Overrides and Customizations
 * Use custom sources for main config file 

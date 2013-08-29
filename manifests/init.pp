@@ -128,17 +128,6 @@
 #   Set to 'true' to enable modules debugging
 #   Can be defined also by the (top scope) variables $dhcpd_debug and $debug
 #
-# [*audit_only*]
-#   Set to 'true' if you don't intend to override existing configuration files
-#   and want to audit the difference between existing files and the ones
-#   managed by Puppet.
-#   Can be defined also by the (top scope) variables $dhcpd_audit_only
-#   and $audit_only
-#
-# [*noops*]
-#   Set noop metaparameter to true for all the resources managed by the module.
-#   Basically you can run a dryrun for this specific module if you set
-#   this to true. Default: false
 #
 # Default class params - As defined in dhcpd::params.
 # Note that these variables are mostly defined and used in the module itself,
@@ -243,8 +232,6 @@ class dhcpd (
   $firewall_src        = params_lookup( 'firewall_src' , 'global' ),
   $firewall_dst        = params_lookup( 'firewall_dst' , 'global' ),
   $debug               = params_lookup( 'debug' , 'global' ),
-  $audit_only          = params_lookup( 'audit_only' , 'global' ),
-  $noops               = params_lookup( 'noops' ),
   $package             = params_lookup( 'package' ),
   $service             = params_lookup( 'service' ),
   $service_status      = params_lookup( 'service_status' ),
@@ -274,8 +261,6 @@ class dhcpd (
   $bool_puppi=any2bool($puppi)
   $bool_firewall=any2bool($firewall)
   $bool_debug=any2bool($debug)
-  $bool_audit_only=any2bool($audit_only)
-  $bool_noops=any2bool($noops)
 
   ### Definition of some variables used in the module
   $manage_package = $dhcpd::bool_absent ? {
@@ -332,15 +317,7 @@ class dhcpd (
     $manage_firewall = true
   }
 
-  $manage_audit = $dhcpd::bool_audit_only ? {
-    true  => 'all',
-    false => undef,
-  }
-
-  $manage_file_replace = $dhcpd::bool_audit_only ? {
-    true  => false,
-    false => true,
-  }
+  $manage_file_replace = true
 
   $manage_file_source = $dhcpd::source ? {
     ''        => undef,
@@ -365,9 +342,9 @@ class dhcpd (
   ### Managed resources
   if $dhcpd::package {
     package { 'dhcpd':
+      ensure  => $dhcpd::manage_package,
       name    => $dhcpd::package,
       ensure  => $dhcpd::manage_package,
-      noop    => $dhcpd::bool_noops,
     }
   }
 
@@ -378,7 +355,6 @@ class dhcpd (
     hasstatus  => $dhcpd::service_status,
     pattern    => $dhcpd::process,
     require    => $require_package,
-    noop       => $dhcpd::bool_noops,
   }
 
   file { 'dhcpd.conf':
@@ -392,8 +368,6 @@ class dhcpd (
     source  => $dhcpd::manage_file_source,
     content => $dhcpd::manage_file_content,
     replace => $dhcpd::manage_file_replace,
-    audit   => $dhcpd::manage_audit,
-    noop    => $dhcpd::bool_noops,
   }
 
   if $dhcpd::config_file_init {
@@ -408,8 +382,6 @@ class dhcpd (
       source  => $dhcpd::manage_file_source_init,
       content => $dhcpd::manage_file_content_init,
       replace => $dhcpd::manage_file_replace,
-      audit   => $dhcpd::manage_audit,
-      noop    => $dhcpd::bool_noops,
     }
   }
 
@@ -425,8 +397,6 @@ class dhcpd (
       purge   => $dhcpd::bool_source_dir_purge,
       force   => $dhcpd::bool_source_dir_purge,
       replace => $dhcpd::manage_file_replace,
-      audit   => $dhcpd::manage_audit,
-      noop    => $dhcpd::bool_noops,
     }
   }
 
@@ -444,7 +414,6 @@ class dhcpd (
       ensure    => $dhcpd::manage_file,
       variables => $classvars,
       helper    => $dhcpd::puppi_helper,
-      noop      => $dhcpd::bool_noops,
     }
   }
 
@@ -460,7 +429,6 @@ class dhcpd (
         argument => $dhcpd::process_args,
         tool     => $dhcpd::monitor_tool,
         enable   => $dhcpd::manage_monitor,
-        noop     => $dhcpd::bool_noops,
       }
     }
   }
@@ -477,7 +445,6 @@ class dhcpd (
       direction   => 'input',
       tool        => $dhcpd::firewall_tool,
       enable      => $dhcpd::manage_firewall,
-      noop        => $dhcpd::bool_noops,
     }
   }
 
@@ -491,7 +458,6 @@ class dhcpd (
       owner   => 'root',
       group   => 'root',
       content => inline_template('<%= scope.to_hash.reject { |k,v| k.to_s =~ /(uptime.*|path|timestamp|free|.*password.*|.*psk.*|.*key)/ }.to_yaml %>'),
-      noop    => $dhcpd::bool_noops,
     }
   }
 
