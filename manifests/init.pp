@@ -344,7 +344,6 @@ class dhcpd (
     package { 'dhcpd':
       ensure  => $dhcpd::manage_package,
       name    => $dhcpd::package,
-      ensure  => $dhcpd::manage_package,
     }
   }
 
