@@ -87,6 +87,10 @@ class dhcpd::params {
       5 => '/etc/dhcp3/dhcpd.conf',
       6 => '/etc/dhcp/dhcpd.conf',
     },
+    /(?i:RedHat|Centos|Scientific|Amazon|Linux)/ => $::lsbmajdistrelease ? {
+      5       => '/etc/dhcpd.conf',
+      default => '/etc/dhcp/dhcpd.conf',
+    },
     default                   => '/etc/dhcpd.conf',
   }
 
