@@ -108,7 +108,10 @@ class dhcpd::params {
   }
 
   $config_file_init = $::operatingsystem ? {
-    /(?i:Debian|Ubuntu|Mint)/ => '/etc/default/dhcp3-server',
+    /(?i:Debian|Ubuntu|Mint)/ => $debian_isc_era ? {
+      5 => '/etc/default/dhcp3-server',
+      6 => '/etc/default/isc-dhcp-server',
+    },
     /(?i:OpenBSD)/            => '',
     default                   => '/etc/sysconfig/dhcpd',
   }
