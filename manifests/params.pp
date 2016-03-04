@@ -20,12 +20,12 @@ class dhcpd::params {
   # Cope with Debian's folies
   $debian_isc_era = $::operatingsystem ? {
     /(?i:Ubuntu)/ => $::lsbmajdistrelease ? {
-      8       => '5',
-      9       => '5',
+      '8'       => '5',
+      '9'       => '5',
       default => '6',
     },
     /(?i:Debian)/ => $::lsbmajdistrelease ? {
-      5       => '5',
+      '5'       => '5',
       default => '6',
     },
     default   => '6',
@@ -35,8 +35,8 @@ class dhcpd::params {
 
   $package = $::operatingsystem ? {
     /(?i:Debian|Ubuntu|Mint)/ => $debian_isc_era ? {
-      5 => 'dhcp3-server',
-      6 => 'isc-dhcp-server',
+      '5' => 'dhcp3-server',
+      '6' => 'isc-dhcp-server',
     },
     /(?i:SLES|OpenSuSE)/      => 'dhcp-server',
     /(?i:OpenBSD)/            => '',
@@ -45,8 +45,8 @@ class dhcpd::params {
 
   $service = $::operatingsystem ? {
     /(?i:Debian|Ubuntu|Mint)/ => $debian_isc_era ? {
-      5 => 'dhcp3-server',
-      6 => 'isc-dhcp-server',
+      '5' => 'dhcp3-server',
+      '6' => 'isc-dhcp-server',
     },
     default                   => 'dhcpd',
   }
@@ -57,8 +57,8 @@ class dhcpd::params {
 
   $process = $::operatingsystem ? {
     /(?i:Debian|Ubuntu|Mint)/ => $debian_isc_era ? {
-      5 => 'dhcpd3',
-      6 => 'dhcpd',
+      '5' => 'dhcpd3',
+      '6' => 'dhcpd',
     },
     default                   => 'dhcpd',
   }
@@ -74,8 +74,8 @@ class dhcpd::params {
 
   $config_dir = $::operatingsystem ? {
     /(?i:Debian|Ubuntu|Mint)/ => $debian_isc_era ? {
-      5 => '/etc/dhcp3',
-      6 => '/etc/dhcp',
+      '5' => '/etc/dhcp3',
+      '6' => '/etc/dhcp',
     },
     /(?i:SLES|OpenSuSE)/      => '/etc/dhcpd.d',
     /(?i:OpenBSD)/            => '',
@@ -84,11 +84,11 @@ class dhcpd::params {
 
   $config_file = $::operatingsystem ? {
     /(?i:Debian|Ubuntu|Mint)/ => $debian_isc_era ? {
-      5 => '/etc/dhcp3/dhcpd.conf',
-      6 => '/etc/dhcp/dhcpd.conf',
+      '5' => '/etc/dhcp3/dhcpd.conf',
+      '6' => '/etc/dhcp/dhcpd.conf',
     },
     /(?i:RedHat|Centos|Scientific|Amazon|Linux)/ => $::lsbmajdistrelease ? {
-      5       => '/etc/dhcpd.conf',
+      '5'       => '/etc/dhcpd.conf',
       default => '/etc/dhcp/dhcpd.conf',
     },
     default                   => '/etc/dhcpd.conf',
@@ -109,8 +109,8 @@ class dhcpd::params {
 
   $config_file_init = $::operatingsystem ? {
     /(?i:Debian|Ubuntu|Mint)/ => $debian_isc_era ? {
-      5 => '/etc/default/dhcp3-server',
-      6 => '/etc/default/isc-dhcp-server',
+      '5' => '/etc/default/dhcp3-server',
+      '6' => '/etc/default/isc-dhcp-server',
     },
     /(?i:OpenBSD)/            => '',
     default                   => '/etc/sysconfig/dhcpd',
@@ -118,8 +118,8 @@ class dhcpd::params {
 
   $pid_file = $::operatingsystem ? {
     /(?i:Debian|Ubuntu|Mint)/ => $debian_isc_era ? {
-      5 => 'var/run/dhcp3-server/dhcpd.pid',
-      6 => 'var/run/dhcp-server/dhcpd.pid',
+      '5' => 'var/run/dhcp3-server/dhcpd.pid',
+      '6' => 'var/run/dhcp-server/dhcpd.pid',
     },
     /(?i:OpenBSD)/            => '',
     default                   => '/var/run/dhcpd.pid',
@@ -127,8 +127,8 @@ class dhcpd::params {
 
   $data_dir = $::operatingsystem ? {
     /(?i:Debian|Ubuntu|Mint)/ => $debian_isc_era ? {
-      5 => '/var/lib/dhcp3',
-      6 => '/var/lib/dhcp',
+      '5' => '/var/lib/dhcp3',
+      '6' => '/var/lib/dhcp',
     },
     /(?i:SLES|OpenSuSE)/      => '/var/lib/dhcp',
     /(?i:OpenBSD)/            => '',
