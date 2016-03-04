@@ -385,7 +385,7 @@ class dhcpd (
   }
 
   # The whole dhcpd configuration directory can be recursively overriden
-  if $dhcpd::source_dir {
+  if $dhcpd::source_dir and $dhcpd::source_dir != '' {
     file { 'dhcpd.dir':
       ensure  => directory,
       path    => $dhcpd::config_dir,
