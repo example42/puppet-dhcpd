@@ -401,7 +401,7 @@ class dhcpd (
 
 
   ### Include custom class if $my_class is set
-  if $dhcpd::my_class {
+  if $dhcpd::my_class and $dhcpd::my_class != '' {
     include $dhcpd::my_class
   }
 
